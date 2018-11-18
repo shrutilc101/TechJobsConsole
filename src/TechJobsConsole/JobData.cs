@@ -5,6 +5,17 @@ using System.Text;
 
 namespace TechJobsConsole
 {
+    public static class StringExtensions
+    {
+        /// <summary>
+        /// Compares two strings, set ignoreCase to true to ignore case comparison ('A' == 'a')
+        /// </summary>
+        public static bool CaseInsensitiveContains(this string text, string value,
+            System.StringComparison stringComparison = System.StringComparison.CurrentCultureIgnoreCase )
+        {
+            return text.IndexOf(value, stringComparison) >= 0;
+        }
+    }
     class JobData
     {
         static List<Dictionary<string, string>> AllJobs = new List<Dictionary<string, string>>();
@@ -38,6 +49,33 @@ namespace TechJobsConsole
             return values;
         }
 
+        public static List<Dictionary<string, string>> FindByValue(string value)
+        {
+            LoadData();
+            List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
+
+            value = value.ToLower();
+
+            foreach (Dictionary<string, string>row in AllJobs)
+            {
+               
+                foreach (var KeyValuePair in row)
+                {
+                    if (KeyValuePair.Value.ToLower().Contains(value) && !jobs.Contains(row))
+                   
+                        {
+                            jobs.Add(row);
+                            
+
+
+                        }
+                    
+                }
+            }
+            return jobs;
+        }
+        
+
         public static List<Dictionary<string, string>> FindByColumnAndValue(string column, string value)
         {
             // load data, if not already loaded
@@ -49,7 +87,7 @@ namespace TechJobsConsole
             {
                 string aValue = row[column];
 
-                if (aValue.Contains(value))
+                if (aValue.CaseInsensitiveContains (value))
                 {
                     jobs.Add(row);
                 }
